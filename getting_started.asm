@@ -27,3 +27,24 @@ R0-R3 are often used for passing parameters to functions and returning results.
 R4-R11 are typically used for local variables within functions.
 R12 is sometimes used as a scratch register or for special purposes.
 The ARM also has a 17th register called the Current Program Status Register (CPSR), which stores processor status and control bits1.
+
+
+## cpsr register is used to store information about a program, some example is the difference of 2 numbers
+and the difference of 2 numbers can be a negative number and to store this negative number we need to use the 2s 
+complement to store it in the binary format. cpsr sets a flag in the memory and through that if the result is a negative
+number and then when we take a look into it later then we can decide that okay it was/is a negative number. 
+Some examples are carrier, overflow, flags and many more and that will be learned later on. 
+
+## spsr :
+
+The SPSR (Saved Program Status Register) is closely related to the CPSR (Current Program Status Register) in ARM architecture. Here's an explanation of the SPSR:
+The SPSR is a register that stores a copy of the CPSR when an exception occurs. Its primary purpose is to preserve the processor state before entering an exception handler.
+Key points about the SPSR include:
+Exception handling: When an exception (like an interrupt) occurs, the current CPSR is automatically saved to the SPSR of the exception mode1.
+State preservation: It maintains the processor state (flags, mode bits, etc.) that existed before the exception, allowing for proper return to the previous state.
+Multiple instances: Each exception mode (e.g., FIQ, IRQ, Abort) has its own SPSR1.
+Restoration: When returning from an exception, the SPSR is used to restore the CPSR, ensuring the processor returns to its pre-exception state.
+Content: Like the CPSR, it contains condition flags (N, Z, C, V), interrupt disable bits, and the processor mode bits1.
+Accessibility: The SPSR is only accessible in privileged modes, not in User mode1.
+Context switching: It plays a crucial role in context switching, allowing the processor to switch between different tasks or handle interrupts without losing the previous execution context.
+The SPSR is essential for maintaining program flow and state during exception handling, ensuring that the processor can correctly resume normal operation after handling exceptions or interrupts.
