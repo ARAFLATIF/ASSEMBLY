@@ -1,6 +1,6 @@
 FUNDAMENTALS OF HEXADECIMAL : 
 
-Bits: Each hexadecimal digit represents 4 bits1. For example:
+Bits: Each hexa decimal digit represents 4 bits1. For example:
 0 = 0000
 F = 1111
 Bytes: A byte (8 bits) is represented by two hexadecimal digits3. For instance:
