@@ -1,4 +1,4 @@
-FUNDAMENTALS OF HEXADECIMAL : 
+FUNDAMENTALS OF HEX ADECIMAL : 
 
 Bits: Each hexa decimal digit represents 4 bits1. For example:
 0 = 0000
