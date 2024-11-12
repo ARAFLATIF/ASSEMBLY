@@ -494,3 +494,161 @@ R0: Address pointer
 R1: Current element
 R2: Accumulator
 R3: End marker
+
+CONDITIONAL INSTRUCTION EXECUTION :
+
+SAMPLE PROGRAM : 
+
+.global _start
+_start:
+    MOV R0, #2
+    MOV R1, #4
+    CMP R1, R0
+    MOVGE R2, #5
+
+
+CODE EXPLANATION : 
+
+MOV R0, #2: Loads the value 2 into register R0.
+MOV R1, #4: Loads the value 4 into register R1.
+CMP R1, R0: Compares the values in R1 and R0. This sets the condition flags in the CPSR (Current Program Status Register).
+MOVGE R2, #5: This is a conditional move instruction. It will only execute if the condition "GE" (Greater than or Equal to) is true based on the previous comparison.
+
+The key point here is the conditional execution:
+The CMP instruction sets the condition flags based on R1 - R0 (4 - 2 in this case).
+MOVGE will only execute if R1 is greater than or equal to R0, which is true in this case.
+If the condition is met (which it is), R2 will be set to 5.
+
+This demonstrates ARM's ability to conditionally execute instructions based on the state of the condition flags, 
+allowing for efficient branching and conditional operations without explicit jump instructions
+
+
+
+BRANCH WITH LINK REGISTER AND RETURNS :
+
+SAMPLE PROGRAM :
+
+.global _start
+_start:
+    MOV R0, #1
+    MOV R1, #3
+    BL add2
+    MOV R3, #4
+    
+add2:
+    ADD R2, R0, R1
+    bx lr
+
+CODE EXPLANATION : 
+
+The program starts by setting up initial values:
+R0 is set to 1
+R1 is set to 3
+BL add2: This is the Branch with Link instruction. It does two things:
+It branches to the add2 label (subroutine)
+It stores the return address (address of the next instruction) in the Link Register (LR)
+The add2 subroutine:
+Adds the values in R0 and R1, storing the result in R2
+bx lr: This instruction branches to the address stored in LR, effectively returning from the subroutine
+After returning from the subroutine, the program continues by moving 4 into R3
+
+
+Key concepts:
+Subroutine: A reusable block of code that can be called from different parts of the program.
+BL (Branch with Link): Used to call subroutines. It jumps to the specified address and saves the return address in LR.
+Link Register (LR): A special register (R14) that stores the return address when a subroutine is called.
+bx lr: Used to return from a subroutine. It branches to the address stored in LR.
+Register preservation: In this simple example, the subroutine doesn't need to preserve register values. 
+In more complex scenarios, you might need to save and restore registers used within the subroutine.
+
+
+
+PRESERVING AND RETRIVING DATA FROM STACK MEMORY :
+
+SAMPLE CODE : 
+
+.global _start
+_start:
+    MOV R0, #1
+    MOV R1, #3
+    PUSH {R0, R1}
+    BL get_value
+    POP {R0, R1}
+    B end
+
+get_value:
+    MOV R0, #5
+    MOV R1, #7
+    ADD R2, R0, R1
+    BX lr
+
+end:
+
+
+Key concepts and explanations:
+
+Stack Operations:
+PUSH {R0, R1}: This instruction pushes the values of R0 and R1 onto the stack. It's used to preserve these values before calling a function.
+POP {R0, R1}: This retrieves the previously pushed values from the stack back into R0 and R1.
+Function Call:
+BL get_value: Branch with Link to the get_value function. This saves the return address in the link register (LR).
+Function Return:
+BX lr: Branch and Exchange using the link register. This returns from the function to the calling point.
+Register Preservation:
+The main code preserves R0 and R1 before calling get_value, which modifies these registers.
+After the function call, the original values are restored.
+Local Variables in Functions:
+get_value uses R0, R1, and R2 for its own calculations without affecting the caller's data.
+Stack Frame:
+Although not explicitly shown, the PUSH and POP operations create a simple stack frame for preserving data across function calls.
+
+
+Important points:
+Stack grows downwards in ARM architecture.
+PUSH decreases the stack pointer, while POP increases it.
+The order of registers in PUSH and POP matters; they are processed in ascending order.
+This method of preserving registers is crucial for maintaining data integrity across function calls.
+In more complex scenarios, you might need to preserve more registers or allocate local variables on the stack.
+
+HARDWARE INTERACTION : 
+
+Interacting with Switches:
+The video demonstrates how to read the state of switches connected to the ARM processor. Here's a sample code snippet:
+
+.equ SWITCH_BASE, 0xFF200000  ; Address of switches
+
+LDR R0, =SWITCH_BASE
+LDR R1, [R0]  ; Load the value of switches into R1
+
+This code loads the state of the switches into register R1. Each bit in R1 represents the state of a switch (on or off).
+
+
+
+Interacting with LEDs:
+The video shows how to control LEDs using the values read from switches. Here's a sample code:
+
+.equ LED_BASE, 0xFF200000  ; Address of LEDs
+
+LDR R0, =SWITCH_BASE
+LDR R1, [R0]        ; Read switch values
+LDR R0, =LED_BASE
+STR R1, [R0]        ; Write switch values to LEDs
+
+
+This code reads the switch values and then writes them directly to the LEDs, causing the LEDs to light up based on the switch positions.
+
+
+
+Binary Representation:
+The video explains that the switches and LEDs represent binary values. For example, if the rightmost switch is on, it represents 2^0 (1 in decimal), the next switch represents 2^1 (2 in decimal), and so on.
+
+
+Memory-Mapped I/O:
+The hardware devices (switches and LEDs) are accessed using specific memory addresses. This is known as memory-mapped I/O.
+
+Input and Output:
+The switches serve as input devices, while the LEDs serve as output devices, demonstrating basic I/O operations in assembly.
+
+
+This example demonstrates how to read input from switches and control output to LEDs, providing a foundation for understanding hardware interactions in ARM assembly programming.
+
