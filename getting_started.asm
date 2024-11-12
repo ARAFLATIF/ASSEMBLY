@@ -257,3 +257,240 @@ The result in R2 is 10100101 in binary
 This binary number equals 0xA5 in hexadecimal
 
 THIS IS HOW THE OTHER OPERATIONS ARE ALSO DONE 
+
+
+LSL, LSR AND ROR : 
+
+
+Logical Shift Left (LSL) for Multiplication
+LSL multiplies a number by 2^n, where n is the shift amount.
+
+MOV R0, #5        ; R0 = 5
+LSL R1, R0, #2    ; R1 = R0 * 2^2 = 5 * 4 = 20
+
+LSL R1, R0, #2    ; R1 = R0 * 2^2 = 5 * 4 = 20
+
+How it works:
+Shifting left by 1 multiplies by 2
+Shifting left by 2 multiplies by 4
+Shifting left by 3 multiplies by 8, and so on
+
+
+
+Logical Shift Right (LSR) for Division
+LSR divides a number by 2^n, where n is the shift amount.
+
+MOV R0, #20       ; R0 = 20
+LSR R1, R0, #2    ; R1 = R0 / 2^2 = 20 / 4 = 5
+
+
+How it works:
+Shifting right by 1 divides by 2
+Shifting right by 2 divides by 4
+Shifting right by 3 divides by 8, and so on
+
+
+Key Points to Remember
+Efficiency: Shift operations are much faster than actual multiplication or division instructions.
+Precision: LSR for division works precisely only for even numbers. Odd numbers will be rounded down.
+Signed vs. Unsigned: LSR always treats the number as unsigned. For signed numbers, use ASR (Arithmetic Shift Right).
+Overflow: Be cautious of overflow when using LSL for large numbers or shift amounts.
+Zero Shift: LSL #0 is valid and doesn't change the value, often used as a no-op or for flag setting.
+
+
+
+Sample Code Demonstrating Various Shifts : 
+
+.global _start
+_start:
+    ; Multiplication by shifts
+    MOV R0, #5
+    LSL R1, R0, #1    ; R1 = 5 * 2 = 10
+    LSL R2, R0, #3    ; R2 = 5 * 8 = 40
+
+    ; Division by shifts
+    MOV R3, #64
+    LSR R4, R3, #3    ; R4 = 64 / 8 = 8
+
+    ; Combining shifts
+    MOV R5, #15
+    LSL R6, R5, #4    ; R6 = 15 * 16 = 240
+    LSR R7, R6, #2    ; R7 = 240 / 4 = 60
+
+    ; Shift with register
+    MOV R8, #2
+    LSL R9, R5, R8    ; R9 = 15 * 4 = 60
+
+
+Practical Applications
+Fast multiplication/division: For multiplying or dividing by powers of 2.
+Bit manipulation: For setting, clearing, or testing specific bits.
+Efficient power calculations: For calculating 2^n quickly.
+Packing/unpacking data: For working with bit fields or flags.
+
+
+
+CONDITIONS AND BRANCHES :
+
+SAMPLE CODE : 
+
+.global _start
+_start:
+	MOV R0,#1
+	MOV R1,#2
+	
+	CMP R0,R1
+	
+	BGT greater
+	BAL default
+	
+greater:
+	mov R2, #1
+
+default:
+	MOV R2,#2
+
+CODE EXPLANATION : 
+
+The code initializes R0 with 1 and R1 with 2.
+It then compares R0 and R1 using the CMP instruction.
+Based on the comparison, it uses conditional branches:
+BGT (Branch if Greater Than) to the 'greater' label
+BAL (Branch Always) to the 'default' label
+The 'greater' and 'default' labels set R2 to different values.
+
+
+
+Key Concepts
+Comparison (CMP):
+CMP R0, R1 subtracts R1 from R0 and sets condition flags but doesn't store the result.
+Condition Flags:
+N (Negative), Z (Zero), C (Carry), V (Overflow)
+Set based on the result of arithmetic and logical operations.
+Conditional Branches:
+Execute based on the state of condition flags.
+
+
+Common Branch Conditions
+B: Branch always
+BEQ: Branch if Equal (Z set)
+BNE: Branch if Not Equal (Z clear)
+BGT: Branch if Greater Than (Z clear AND N == V)
+BLT: Branch if Less Than (N != V)
+BGE: Branch if Greater Than or Equal (N == V)
+BLE: Branch if Less Than or Equal (Z set OR N != V)
+BHI: Branch if Higher (unsigned, C set AND Z clear)
+BLS: Branch if Lower or Same (unsigned, C clear OR Z set)
+
+
+
+Study Notes
+Comparison and Flags:
+CMP sets flags without changing register values.
+Use these flags for conditional execution.
+Branch Instructions:
+Change program flow based on conditions.
+Use meaningful labels for clarity.
+Conditional Execution:
+Most ARM instructions can be conditionally executed.
+Add condition codes to instructions (e.g., MOVEQ, ADDNE).
+Optimization:
+Use conditional execution to reduce branches and improve performance.
+Common Patterns:
+Compare then branch for if-else structures.
+Use loops with conditional branches for while/for loops.
+Link Register:
+BL (Branch with Link) stores return address in LR (R14).
+Used for function calls.
+Range Limitations:
+Branch instructions have a limited range (±32MB).
+For longer jumps, use indirect branching through registers.
+
+
+
+LOOPS WITH BRANCHES :
+
+SAMPLE CODE : 
+
+.global _start
+.equ endlist, 0xaaaaaaaa
+_start:
+    LDR R0,=list
+    LDR R3,=endlist
+    LDR R1,[R0]
+    ADD R2,R2,R1
+loop:
+    LDR R1,[R0,#4]!
+    CMP R1,R3
+    BEQ exit
+    ADD R2,R2,R1
+    BAL loop
+    
+exit:
+
+.data
+list:
+    .word 1,2,3,4,5,6,7,8,9,10
+
+
+CODE EXPLANATION : 
+
+The code defines a constant endlist with value 0xaaaaaaaa.
+It loads the address of list into R0 and endlist into R3.
+The first element of the list is loaded into R1 and added to R2.
+The loop starts by loading the next element into R1.
+It compares the loaded value with the end marker (R3).
+If equal, it branches to exit.
+Otherwise, it adds the value to R2 and loops back.
+
+
+Otherwise, it adds the value to R2 and loops back.
+Key Concepts
+Loop Implementation:
+Uses a combination of loading, comparing, and branching.
+Continues until a specific condition is met.
+Memory Access:
+LDR R1,[R0,#4]! loads a value and updates the address (post-indexed addressing).
+Conditional Branching:
+BEQ exit branches if the comparison result is equal.
+BAL loop always branches back to the loop start.
+Data Section:
+.data section contains the list of numbers to be processed.
+
+
+
+Common Branch Instructions
+B: Branch always
+BEQ: Branch if Equal
+BNE: Branch if Not Equal
+BGT: Branch if Greater Than
+BLT: Branch if Less Than
+BGE: Branch if Greater Than or Equal
+BLE: Branch if Less Than or Equal
+BAL: Branch Always (unconditional)
+
+
+Study Notes
+Loop Structure:
+Initialization before the loop
+Condition check at the beginning or end
+Body of the loop
+Update of loop variables
+Memory Addressing:
+Use of base register (R0) with offset for array access
+Pre-indexed and post-indexed addressing modes
+Comparison and Branching:
+CMP sets flags for conditional execution
+Branch instructions use these flags
+Data Processing:
+Accumulation of values in R2
+Termination Condition:
+Use of a specific value (endlist) to mark the end of data
+Efficiency:
+Minimizing branches improves performance
+Using conditional execution where possible
+Register Usage:
+R0: Address pointer
+R1: Current element
+R2: Accumulator
+R3: End marker
