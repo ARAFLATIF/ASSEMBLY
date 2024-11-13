@@ -652,3 +652,220 @@ The switches serve as input devices, while the LEDs serve as output devices, dem
 
 This example demonstrates how to read input from switches and control output to LEDs, providing a foundation for understanding hardware interactions in ARM assembly programming.
 
+
+PRINTING CODE TO THE TERMINAL : 
+
+SAMPLE CODE : 
+
+.global _start
+_start:
+    MOV R0, #1         ; File descriptor for stdout (1)
+    LDR R1, =message   ; Load the address of the message into R1
+    LDR R2, =len       ; Load the length of the message into R2
+    MOV R7, #4         ; System call number for write (4)
+    SWI 0              ; Invoke the system call to write the message
+
+    MOV R7, #1         ; System call number for exit (1)
+    SWI 0              ; Invoke the system call to exit the program
+
+.data
+message:
+   .asciz "Hello World \n" ; The string to be printed, null-terminated
+len =.-message         ; Calculate the length of the message
+
+
+Key Components
+System Call for Writing:
+MOV R0, #1: Sets the file descriptor for stdout (standard output).
+LDR R1, =message: Loads the address of the string "Hello World \n" into R1.
+LDR R2, =len: Loads the length of the string into R2.
+MOV R7, #4: Sets the system call number for write (4).
+SWI 0: Invokes the system call to write the string to the terminal.
+System Call for Exit:
+MOV R7, #1: Sets the system call number for exit (1).
+SWI 0: Invokes the system call to exit the program.
+Data Section:
+message: Defines the string "Hello World \n" using the .asciz directive, which null-terminates the string.
+len =.-message: Calculates the length of the string by subtracting the current address from the address of the message label.
+
+
+
+Step-by-Step Process
+Initialize Registers:
+Set R0 to 1, which is the file descriptor for stdout.
+Load the address of the message into R1.
+Load the length of the message into R2.
+Invoke Write System Call:
+Set R7 to 4, which is the system call number for write.
+Use SWI 0 to invoke the system call, which writes the string to the terminal.
+Exit Program:
+Set R7 to 1, which is the system call number for exit.
+Use SWI 0 to invoke the system call, which exits the program.
+
+
+Assembling and Running the Code
+To assemble and run this code on a Raspberry Pi, you would typically follow these steps:
+Save the Code:
+Save the above code in a file named hello.s.
+Assemble the Code:
+Use the assembler to convert the assembly code into an object file.
+
+as -o hello.o hello.s
+
+Link the Code:
+Link the object file to create an executable.
+
+ld -o hello hello.o
+
+Run the Code:
+Execute the program.
+
+./hello
+
+
+
+This will print "Hello World \n" to the terminal and then exit the program.
+
+### Additional Notes
+
+- **System Calls**: The `SWI 0` instruction is used to invoke system calls. The value in R7 determines which system call to invoke.
+- **Registers**: R0, R1, and R2 are used to pass arguments to the system call. R7 is used to specify the system call number.
+- **Data Section**: The `.data` section is used to define data that will be used by the program. The `.asciz` directive is used to define null-terminated strings.
+
+By following this example, you can understand how to print strings to the terminal using ARM assembly on a Raspberry Pi[3][4].
+
+
+
+
+
+DEBUGGING ARM PROGRAMS WITH GDB
+
+To debug ARM programs using GDB, you need to follow a series of steps that involve compiling your code, launching GDB, setting breakpoints, and stepping through your program. Here’s a detailed example to illustrate this process:
+
+Step 1: Compile Your ARM Assembly Code
+First, you need to compile your ARM assembly code into an executable. Here is an example of a simple "Hello World" program in ARM assembly:
+
+
+.global _start
+_start:
+    MOV R0, #1
+    LDR R1, =message
+    LDR R2, =len
+    MOV R7, #4
+    SWI 0
+
+    MOV R7, #1
+    SWI 0
+
+.data
+message:
+   .asciz "Hello World \n"
+len =.-message
+
+Compile this code using the ARM cross-compiler:
+
+as -o hello.o hello.s
+ld -o hello hello.o
+
+
+Step 2: Launch GDB
+Launch GDB with your compiled executable:
+
+gdb./hello
+
+Step 3: Set Breakpoints
+Once GDB is launched, you can set breakpoints at specific locations in your code. For example, you can set a breakpoint at the _start label:
+
+(gdb) break _start
+
+Step 4: Run the Program
+Start the execution of your program:
+
+(gdb) run
+
+GDB will stop at the breakpoint you set.
+
+Step 5: Examine Registers and Memory
+You can examine the registers and memory to see the current state of your program. Here are some commands you can use:
+List the current instruction: disassemble _start
+Show the registers: info registers
+Examine memory: x/s &message (to see the string stored at the message label)
+
+EXAMPLE : 
+
+(gdb) disassemble _start
+(gdb) info registers
+(gdb) x/s &message
+
+Step 6: Step Through the Program
+You can step through your program instruction by instruction using the step or next commands:
+
+(gdb) step
+(gdb) next
+
+Step 7: Continue Execution
+If you want to continue the execution until the next breakpoint or until the program finishes, use the continue command:
+
+(gdb) continue
+
+Example GDB Session
+Here is an example of what a GDB session might look like:
+
+(gdb) break _start
+Breakpoint 1 at 0x10000: file hello.s, line 3.
+(gdb) run
+Starting program: /path/to/hello 
+
+Breakpoint 1, _start () at hello.s:3
+3             MOV R0, #1
+(gdb) info registers
+r0             0x0      0
+r1             0x0      0
+r2             0x0      0
+r3             0x0      0
+r4             0x0      0
+r5             0x0      0
+r6             0x0      0
+r7             0x0      0
+r8             0x0      0
+r9             0x0      0
+r10            0x0      0
+r11            0x0      0
+sp             0x7ffffff0       0x7ffffff0
+lr             0x0      0
+pc             0x10000  0x10000 <_start>
+cpsr           0x60000010       [Z flag clear]
+
+(gdb) step
+4             LDR R1, =message
+(gdb) info registers
+r0             0x1      1
+r1             0x10020  65536
+r2             0x0      0
+r3             0x0      0
+r4             0x0      0
+r5             0x0      0
+r6             0x0      0
+r7             0x0      0
+r8             0x0      0
+r9             0x0      0
+r10            0x0      0
+r11            0x0      0
+sp             0x7ffffff0       0x7ffffff0
+lr             0x0      0
+pc             0x10004  0x10004 <_start+4>
+cpsr           0x60000010       [Z flag clear]
+
+(gdb) x/s &message
+0x10020:       "Hello World \n"
+(gdb) continue
+Continuing.
+
+Program received signal SIGTRAP, Trace/breakpoint trap.
+0x10010 in _start () at hello.s:9
+9              MOV R7, #1
+(gdb) quit
+
+This example demonstrates how to use GDB to debug an ARM assembly program, including setting breakpoints, examining registers and memory, and stepping through the code
+
+
