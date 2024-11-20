@@ -363,7 +363,7 @@ The 'greater' and 'default' labels set R2 to different values.
 
 Key Concepts
 Comparison (CMP):
-CMP R0, R1 subtracts R1 from R0 and sets condition flags but doesn't store the result.
+CMP R0, R1 subtracts R1 from R0 and sets condi-tion flags but doesn't store the result.
 Condition Flags:
 N (Negative), Z (Zero), C (Carry), V (Overflow)
 Set based on the result of arithmetic and logical operations.
