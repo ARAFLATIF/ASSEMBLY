@@ -188,7 +188,7 @@ Flag Setting: Not all instructions set flags by default. You can append 'S' to m
 Hexadecimal Notation: ARM assembly uses '#' to denote immediate values, including hexadecimal numbers.
 Register Usage: R0-R12 are general-purpose registers. R13-R15 have special purposes (stack pointer, link register, program counter).
 Arithmetic Operations: ARM provides various arithmetic instructions like ADD, SUB, MUL, etc., each with specific uses and effects on flags6.
-Conditional Execution: ARM allows for conditional execution of instructions based on CPSR flags, enhancing code efficiency5
+Conditional Execution: ARM allows for conditional execution of instructions based on CPSR flags,  enhancing code efficiency5
 
 
 
