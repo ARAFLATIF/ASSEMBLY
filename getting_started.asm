@@ -620,7 +620,7 @@ The video demonstrates how to read the state of switches connected to the ARM pr
 LDR R0, =SWITCH_BASE
 LDR R1, [R0]  ; Load the value of switches into R1
 
-This code loads the state of the switches into register R1. Each bit in R1 represents the state of a switch (on or off).
+This code loads the state of the switches into register R1. Each bit in R1 represents  the state of a switch (on or off).
 
 
 
