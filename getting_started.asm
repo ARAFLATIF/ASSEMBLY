@@ -14,7 +14,7 @@ This system allows for efficient representation of binary  data:
 
 *** WE WILL ALWAYS BE WORKING IN HEXADECIMAL AND ALWAYS KEEP THAT IN MIND
 
-## BASIC INTRODUCTION AND OVERVIEW OF THE REGISTERS : 
+## BASIC INTRODUCTION  AND OVERVIEW OF THE REGISTERS : 
 
 The ARM processor has 16 main registers (R0-R15), each 32 bits wide. Here's a brief overview of their typical uses:
 R0-R12: General-purpose registers for data storage and manipulation.
