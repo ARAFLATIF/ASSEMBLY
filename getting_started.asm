@@ -8,7 +8,7 @@ Bytes: A byte (8 bits) is represented by two hexadecimal digits3. For instance:
 FF = 11111111
 This system allows for efficient representation of binary  data:
 1 hex digit = 4 bits (half a byte or a nibble)
-2 hex digits = 8 bits (1 byte)
+2 hex digits = 8 bits  (1 byte)
 4 hex digits = 16 bits (2 bytes )
 8 hex digits = 32 bits (4 bytes)
 
